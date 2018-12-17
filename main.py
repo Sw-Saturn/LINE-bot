@@ -11,6 +11,7 @@ from linebot.models import (
 )
 import settings
 import json
+import requests
 import pymysql.cursors
 
 app = Flask(__name__)
@@ -44,7 +45,7 @@ def callback():
 
 def userAdd(body):
     event = body['events'][0]
-    print(event['type'])
+    # print(event['type'])
     if event['type']=='follow':
         user_id = event['source']['userId']
         profile=line_bot_api.get_profile(user_id)
@@ -62,6 +63,23 @@ def handle_message(event):
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=event.message.text))
+    users = selectUsers()
+    line_bot_api.multicast(users,TextSendMessage(text="Hello World"))
+
+def selectUsers():
+    connect = pymysql.connect(user='line',passwd='Saturn1203',host='ik1-331-25783.vs.sakura.ne.jp',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor,db='line_bot')
+    try:
+        with connect.cursor() as cursor:
+            sql = 'SELECT `userID` FROM `users` WHERE 1'
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            users = []
+            for i in results:
+                users.append(i['userID'])
+    finally:
+        connect.close()
+    # print(users)
+    return users
 
 def register(id,name):
     connect = pymysql.connect(user='line',passwd='Saturn1203',host='ik1-331-25783.vs.sakura.ne.jp',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor,db='line_bot')
@@ -84,6 +102,6 @@ def unregister(id):
     finally:
         connect.close()
 
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0",debug=True)
-    # main()
