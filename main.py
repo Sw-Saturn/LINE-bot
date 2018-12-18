@@ -12,6 +12,8 @@ from linebot.models import (
 import settings
 import json
 import requests
+from datetime import date
+from pprint import *
 import pymysql.cursors
 
 app = Flask(__name__)
@@ -64,8 +66,24 @@ def handle_message(event):
         event.reply_token,
         TextSendMessage(text=event.message.text))
     users = selectUsers()
-    line_bot_api.multicast(users,TextSendMessage(text="Hello World"))
+    todayClass = parseClass()
+    today = []
+    for row in todayClass.items():
+        if row[1] != '':
+            today.append(row[0]+':'+row[1])
+    pprint(today)
+    today = map(str,today)
+    today = '\n'.join(today)
+    line_bot_api.multicast(users,TextSendMessage(text=today))
 
+def parseClass():
+    d = date.today()
+    day = d.weekday()
+    # print(day)
+    with open('class.json','r') as f:
+        class_data = json.load(f)
+        # pprint(class_data[day])
+    return class_data[day]
 def selectUsers():
     connect = pymysql.connect(user='line',passwd='Saturn1203',host='ik1-331-25783.vs.sakura.ne.jp',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor,db='line_bot')
     try:
@@ -80,7 +98,6 @@ def selectUsers():
         connect.close()
     # print(users)
     return users
-
 def register(id,name):
     connect = pymysql.connect(user='line',passwd='Saturn1203',host='ik1-331-25783.vs.sakura.ne.jp',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor,db='line_bot')
     try:
@@ -104,4 +121,5 @@ def unregister(id):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0",debug=True)
+    # app.run(host="0.0.0.0",debug=True)
+    parseClass()
