@@ -66,24 +66,26 @@ def handle_message(event):
         event.reply_token,
         TextSendMessage(text=event.message.text))
     users = selectUsers()
-    todayClass = parseClass()
-    today = []
-    for row in todayClass.items():
-        if row[1] != '':
-            today.append(row[0]+':'+row[1])
-    pprint(today)
-    today = map(str,today)
-    today = '\n'.join(today)
+    today = parseClass()
     line_bot_api.multicast(users,TextSendMessage(text=today))
 
 def parseClass():
     d = date.today()
     day = d.weekday()
     # print(day)
-    with open('class.json','r') as f:
-        class_data = json.load(f)
-        # pprint(class_data[day])
-    return class_data[day]
+    try:
+        with open('class.json','r') as f:
+            class_data = json.load(f)
+            # pprint(class_data[day])
+    finally:
+        today = []
+        for row in class_data[day].items():
+            if row[1] != '':
+                today.append(row[0]+':'+row[1])
+        # pprint(today)
+        today = map(str,today)
+        today = '\n'.join(today)
+    return today
 def selectUsers():
     connect = pymysql.connect(user='line',passwd='Saturn1203',host='ik1-331-25783.vs.sakura.ne.jp',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor,db='line_bot')
     try:
@@ -119,7 +121,11 @@ def unregister(id):
     finally:
         connect.close()
 
+def pushClass():
+    users = selectUsers()
+    today = parseClass()
+    line_bot_api.multicast(users,TextSendMessage(text=today))
 
 if __name__ == "__main__":
     # app.run(host="0.0.0.0",debug=True)
-    parseClass()
+    pushClass()
