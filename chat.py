@@ -33,17 +33,15 @@ def callback():
     # get request body as text
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
-    # userId を取得 (1)
-    body_json = json.loads(body)
-    app.logger.info('User Id: {}'.format(body_json['events'][0]['source']['userId']))
+
     # handle webhook body
-    userAdd(body_json)
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
         abort(400)
 
     return 'OK'
+
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
