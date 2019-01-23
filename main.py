@@ -87,7 +87,7 @@ def parseClass():
         today = '\n'.join(today)
     return today
 def selectUsers():
-    connect = pymysql.connect(user='line',passwd='Saturn1203',host='ik1-331-25783.vs.sakura.ne.jp',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor,db='line_bot')
+    connect = pymysql.connect(user=settings.user,passwd=settings.password,host=settings.host,charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor,db=settings.db)
     try:
         with connect.cursor() as cursor:
             sql = 'SELECT `userID` FROM `users` WHERE 1'
@@ -101,7 +101,7 @@ def selectUsers():
     # print(users)
     return users
 def register(id,name):
-    connect = pymysql.connect(user='line',passwd='Saturn1203',host='ik1-331-25783.vs.sakura.ne.jp',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor,db='line_bot')
+    connect = pymysql.connect(user=settings.user,passwd=settings.password,host=settings.host,charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor,db=settings.db)
     try:
         with connect.cursor() as cursor:
             sql = 'INSERT INTO users (userID,Name) VALUES (%s,%s)'
@@ -111,7 +111,7 @@ def register(id,name):
     finally:
         connect.close()
 def unregister(id):
-    connect = pymysql.connect(user='line',passwd='Saturn1203',host='ik1-331-25783.vs.sakura.ne.jp',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor,db='line_bot')
+    connect = pymysql.connect(user=settings.user,passwd=settings.password,host=settings.host,charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor,db=settings.db)
     try:
         with connect.cursor() as cursor:
             sql = 'DELETE FROM users WHERE userID=%s'
