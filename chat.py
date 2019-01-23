@@ -10,11 +10,7 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,TemplateSendMessage,ButtonsTemplate,MessageAction
 )
 import settings
-import json
-import requests
-from datetime import date
-from pprint import *
-import pymysql.cursors
+import os
 
 app = Flask(__name__)
 
@@ -50,4 +46,5 @@ def handle_message(event):
         TextSendMessage(text=event.message.text))
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0",debug=True)
+    port = int(os.getenv("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
