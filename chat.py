@@ -22,6 +22,7 @@ handler = WebhookHandler(settings.access_secret)
 def hello_world():
     return "hello world"
 
+
 @app.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
@@ -37,7 +38,7 @@ def callback():
     except InvalidSignatureError:
         abort(400)
 
-    return 'OK'
+    return 200
 
 
 @handler.add(MessageEvent, message=TextMessage)
