@@ -10,6 +10,8 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,TemplateSendMessage,ButtonsTemplate,MessageAction
 )
 import settings
+import json
+import requests
 import os
 import generateReply
 
@@ -46,7 +48,7 @@ def callback():
     except InvalidSignatureError:
         abort(400)
 
-    return 200
+    return 'OK'
 
 
 @handler.add(MessageEvent, message=TextMessage)
@@ -57,4 +59,5 @@ def handle_message(event):
         TextSendMessage(text=word))
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0",port=5000)
+    port = int(os.getenv("PORT", 5000))
+    app.run(host="0.0.0.0",port=port)
