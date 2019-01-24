@@ -15,8 +15,16 @@ import generateReply
 
 app = Flask(__name__)
 
-line_bot_api = LineBotApi(settings.access_token)
-handler = WebhookHandler(settings.access_secret)
+# line_bot_api = LineBotApi(settings.access_token)
+# handler = WebhookHandler(settings.access_secret)
+
+#LINE Access Token
+YOUR_CHANNEL_ACCESS_TOKEN = os.environ["YOUR_CHANNEL_ACCESS_TOKEN"]
+#LINE Channel Secret
+YOUR_CHANNEL_SECRET = os.environ["YOUR_CHANNEL_SECRET"]
+
+line_bot_api = LineBotApi(YOUR_CHANNEL_ACCESS_TOKEN)
+handler = WebhookHandler(YOUR_CHANNEL_SECRET)
 
 @app.route("/")
 def hello_world():
